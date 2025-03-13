@@ -25,12 +25,10 @@
 // Motor and driver pins
 #define STEP_PIN 32
 #define DIR_PIN 33
-#define ENABLE_PIN 14
 
 // Encoder pins for position feedback
-#define ENCODER_A_PIN 23
-#define ENCODER_B_PIN 22
-#define ENCODER_INDEX_PIN 21 // Optional index pin if available
+#define ENCODER_A_PIN 22
+#define ENCODER_B_PIN 23
 
 // Limit switch pin (single switch at the end of travel)
 #define LIMIT_SWITCH_PIN 13 // Using a lower priority pin
@@ -736,16 +734,12 @@ void calibrateSystem()
 void setup()
 {
   // Initialize serial for debugging
-  Serial.begin(250000);
+  Serial.begin(115200);
   Serial.println("High Precision Motion Control System");
 
   // Configure motor control pins
   pinMode(STEP_PIN, OUTPUT);
   pinMode(DIR_PIN, OUTPUT);
-  pinMode(ENABLE_PIN, OUTPUT);
-
-  // Active LOW enable
-  digitalWrite(ENABLE_PIN, LOW); // Enable the motor driver
 
   // Setup encoder hardware
   setupEncoder();
