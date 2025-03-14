@@ -1,49 +1,64 @@
-BasedOnStyle:  GNU
-AlignAfterOpenBracket: Align
-AllowAllParametersOfDeclarationOnNextLine: false
-AllowShortBlocksOnASingleLine: true
-AllowShortCaseLabelsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: All #AllowShortFunctionsOnASingleLine: Empty
-# Uncommenting these lines will sometimes result in lines following an
-# if(){} or for(){} block being attached to the end of the block.
-# AllowShortIfStatementsOnASingleLine: true
-# AllowShortLoopsOnASingleLine: true
-AlwaysBreakAfterDefinitionReturnType: None
-AlwaysBreakAfterReturnType: None
+---
+Language: Cpp
+# بر اساس کد ESP32 Motion Control System
+BasedOnStyle: Google
+
+# تنظیمات اصلی
+AccessModifierOffset: -4
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+
+# براکت‌ها
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterClass:      true
-  AfterControlStatement: true
-  AfterEnum:       true
-  AfterFunction:   true
-  AfterNamespace:  true
-  AfterStruct:     true
-  AfterUnion:      true
-  AfterExternBlock: true
-  BeforeCatch:     true
-  BeforeElse:      true
-  IndentBraces:    true
+  AfterClass: false
+  AfterControlStatement: false
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterStruct: false
+  AfterUnion: false
+  BeforeCatch: false
+  BeforeElse: false
+  IndentBraces: false
   SplitEmptyFunction: false
   SplitEmptyRecord: false
-  SplitEmptyNamespace: false
-ColumnLimit: 135
-AccessModifierOffset: -4
+
+# تورفتگی و فاصله‌گذاری
+IndentCaseLabels: true
+NamespaceIndentation: All
+FixNamespaceComments: true
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignTrailingComments: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+# ویژگی‌های خاص برای پروژه‌های Embedded
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: Right
+AllowAllParametersOfDeclarationOnNextLine: true
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 Cpp11BracedListStyle: true
-KeepEmptyLinesAtTheStartOfBlocks: false
-Language:        Cpp
-MaxEmptyLinesToKeep: 1
-NamespaceIndentation: All
-PenaltyExcessCharacter: 100
-PenaltyReturnTypeOnItsOwnLine: 1
-PointerAlignment: Right # PointerAlignment: Left
-SortIncludes: false
-SpaceBeforeParens: Never
-SpacesInContainerLiterals: false
-Standard:        Cpp11
+DerivePointerAlignment: false
+PointerAlignment: Left
 
-AlignEscapedNewlines: Left
-AllowShortLambdasOnASingleLine: Empty
-AlwaysBreakTemplateDeclarations: true
-BreakConstructorInitializers: BeforeComma
-IndentPPDirectives: AfterHash
+# فرمت کدهای اصلی
+SortIncludes: true
+SortUsingDeclarations: true
+IncludeBlocks: Preserve
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+ReflowComments: true
