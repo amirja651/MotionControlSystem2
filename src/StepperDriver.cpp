@@ -44,6 +44,9 @@ namespace MotionSystem {
         }
     }
 
+    /**
+     * Set motor direction (1 = forward, 0 = backward)
+     */
     void StepperDriver::setDirection(bool forward) {
         m_direction = forward;
         digitalWrite(m_dirPin, forward ? HIGH : LOW);
@@ -52,6 +55,10 @@ namespace MotionSystem {
         delayMicroseconds(5);
     }
 
+    /**
+     * Generate step pulse with precise timing
+     * Uses digitalWrite for compatibility but can be optimized with direct register access
+     */
     void IRAM_ATTR StepperDriver::step() {
         // Generate a single step pulse
         digitalWrite(m_stepPin, HIGH);
@@ -79,7 +86,7 @@ namespace MotionSystem {
         m_currentSpeed = speed;
     }
 
-    bool IRAM_ATTR StepperDriver::update(uint64_t now) {
+    bool IRAM_ATTR StepperDriver::generateStep() {
         // If speed is zero or driver is disabled, no step needed
         if (m_currentSpeed == 0 || !m_enabled) {
             return false;
@@ -87,6 +94,9 @@ namespace MotionSystem {
 
         // Calculate time for current step interval
         uint32_t step_interval = calculateStepInterval();
+
+        // Get current time
+        uint64_t now = esp_timer_get_time();
 
         // Generate step if enough time has passed
         if (step_interval > 0 && now - m_lastStepTime >= step_interval) {
@@ -98,6 +108,9 @@ namespace MotionSystem {
         return false;
     }
 
+    /**
+     * Calculate time for next step based on current speed
+     */
     uint32_t StepperDriver::calculateStepInterval() const {
         float speed = abs(m_currentSpeed);
 
@@ -110,10 +123,16 @@ namespace MotionSystem {
         return 1000000 / speed;
     }
 
+    /**
+     * Convert microns to motor steps
+     */
     int32_t StepperDriver::micronsToSteps(float microns) const {
         return roundf(microns * Config::MotionParams::MOTOR_STEPS_PER_MICRON);
     }
 
+    /**
+     * Convert pixels to motor steps
+     */
     int32_t StepperDriver::pixelsToSteps(float pixels) const {
         return micronsToSteps(pixels * Config::MotionParams::PIXEL_SIZE);
     }

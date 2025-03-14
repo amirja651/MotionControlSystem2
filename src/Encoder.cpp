@@ -19,6 +19,10 @@ namespace MotionSystem {
           m_lastCount(0),
           m_initialized(false) {}
 
+    /**
+     * Setup encoder pulse counter for quadrature decoding
+     * Using ESP32's hardware pulse counter for precise position tracking
+     */
     void Encoder::begin() {
         if (m_initialized)
             return;
@@ -59,6 +63,9 @@ namespace MotionSystem {
         m_initialized = true;
     }
 
+    /**
+     * Read the current position from the encoder in quadrature counts
+     */
     int32_t Encoder::readPosition() {
         int16_t count = 0;
         pcnt_get_counter_value(m_pcntUnit, &count);
@@ -70,6 +77,9 @@ namespace MotionSystem {
         return m_position;
     }
 
+    /**
+     * Reset the current position
+     */
     void Encoder::resetCounter() {
         pcnt_counter_pause(m_pcntUnit);
         pcnt_counter_clear(m_pcntUnit);
@@ -79,28 +89,42 @@ namespace MotionSystem {
         s_overflowCount = 0;
     }
 
+    /**
+     * Convert encoder counts to microns
+     */
     float Encoder::countsToMicrons(int32_t counts) {
         return static_cast<float>(counts) / Config::MotionParams::ENCODER_COUNTS_PER_MICRON;
     }
 
+    /**
+     * Convert microns to motor steps
+     */
     int32_t Encoder::micronsToCount(float microns) {
         return static_cast<int32_t>(microns * Config::MotionParams::ENCODER_COUNTS_PER_MICRON);
     }
 
-    // Option 2: Keep the functions static but implement them directly without calling non-static
-    // methods
+    /**
+     * Convert encoder counts to pixels
+     */
     float Encoder::countsToPixels(int32_t counts) {
         // Implement the conversion directly instead of calling countsToMicrons
         return (static_cast<float>(counts) / Config::MotionParams::ENCODER_COUNTS_PER_MICRON) /
                Config::MotionParams::PIXEL_SIZE;
     }
 
+    /**
+     * Convert pixels to motor steps
+     */
     int32_t Encoder::pixelsToCount(float pixels) {
         // Implement the conversion directly instead of calling micronsToCount
         return static_cast<int32_t>((pixels * Config::MotionParams::PIXEL_SIZE) *
                                     Config::MotionParams::ENCODER_COUNTS_PER_MICRON);
     }
 
+    /**
+     * ISR for pulse counter overflow/underflow
+     * Extends the 16-bit counter to 32-bit
+     */
     void IRAM_ATTR Encoder::overflowHandler(void* arg) {
         uint32_t status  = 0;
         Encoder* encoder = static_cast<Encoder*>(arg);

@@ -107,6 +107,9 @@ namespace MotionSystem {
         }
     }
 
+    /**
+     * PID Task - Runs at high priority for closed-loop position control
+     */
     void MotionController::pidControlTask(void* parameter) {
         MotionController* controller = static_cast<MotionController*>(parameter);
 
@@ -156,11 +159,8 @@ namespace MotionSystem {
             // Check all safety parameters
             controller->m_safety.checkSafety();
 
-            // Get current time
-            uint64_t now = esp_timer_get_time();
-
             // Update stepper motor - generate steps if needed
-            controller->m_driver.update(now);
+            controller->m_driver.generateStep();
 
             // Determine motion status
             float speed = controller->m_driver.getSpeed();
@@ -175,6 +175,9 @@ namespace MotionSystem {
         }
     }
 
+    /**
+     * Status update task - Handles periodic status updates
+     */
     void MotionController::statusUpdateTask(void* parameter) {
         MotionController* controller = static_cast<MotionController*>(parameter);
 
@@ -198,6 +201,9 @@ namespace MotionSystem {
         }
     }
 
+    /**
+     * Move to absolute position in microns (relative to relative zero)
+     */
     bool MotionController::moveToPosition(float positionMicrons, bool calibration) {
         // Check if within relative travel limits
         if (!calibration && !m_safety.isPositionSafe(positionMicrons)) {
@@ -220,6 +226,9 @@ namespace MotionSystem {
         return true;
     }
 
+    /**
+     * Move to absolute position in pixels (relative to relative zero)
+     */
     bool MotionController::moveToPositionPixels(float positionPixels) {
         // Convert pixels to microns
         float positionMicrons = positionPixels * Config::MotionParams::PIXEL_SIZE;
@@ -235,6 +244,9 @@ namespace MotionSystem {
         return result;
     }
 
+    /**
+     * Move relative to current position in microns
+     */
     bool MotionController::moveRelative(float distanceMicrons) {
         // Get current relative position
         float currentRelPos = getRelativePosition();
@@ -252,6 +264,9 @@ namespace MotionSystem {
         return result;
     }
 
+    /**
+     * Move relative to current position in pixels
+     */
     bool MotionController::moveRelativePixels(float distancePixels) {
         // Convert pixels to microns
         float distanceMicrons = distancePixels * Config::MotionParams::PIXEL_SIZE;
@@ -266,6 +281,9 @@ namespace MotionSystem {
         return result;
     }
 
+    /**
+     * Wait for motion to complete within tolerance
+     */
     bool MotionController::waitForMotionComplete(float toleranceMicrons, uint32_t timeoutMs) {
         int32_t  toleranceCounts = m_encoder.micronsToCount(toleranceMicrons);
         uint32_t startTime       = millis();
@@ -288,6 +306,10 @@ namespace MotionSystem {
         return false;  // Timeout occurred
     }
 
+    /**
+     * Calibrate the system by finding home position
+     * For a single limit switch setup, this assumes the switch is at the minimum position
+     */
     bool MotionController::calibrateSystem() {
         Serial.println("Starting system calibration...");
 
@@ -347,21 +369,33 @@ namespace MotionSystem {
         return true;
     }
 
+    /**
+     * Reset the relative zero position to current position
+     */
     void MotionController::resetRelativeZero() {
         m_relativeZeroPosition = m_encoder.readPosition();
         Serial.println("Relative zero position reset at current position");
     }
 
+    /**
+     * Get absolute position in microns (relative to HOME/absolute zero)
+     */
     float MotionController::getAbsolutePosition() const {
         int32_t currentPosition = m_encoder.getLastPosition();
         return m_encoder.countsToMicrons(currentPosition - m_absoluteZeroPosition);
     }
 
+    /**
+     * Get relative position in microns (relative to user-set zero)
+     */
     float MotionController::getRelativePosition() const {
         int32_t currentPosition = m_encoder.getLastPosition();
         return m_encoder.countsToMicrons(currentPosition - m_relativeZeroPosition);
     }
 
+    /**
+     * Print a status update to the serial port
+     */
     void MotionController::printStatusUpdate(bool forceDisplay) const {
         // Get current positions
         int32_t currentPosition = m_encoder.getLastPosition();

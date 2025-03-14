@@ -32,6 +32,9 @@ namespace MotionSystem {
         setupLimitSwitch();
     }
 
+    /**
+     * Setup limit switch with interrupt
+     */
     void SafetyMonitor::setupLimitSwitch() {
         // Attach interrupt for limit switch (trigger on falling edge - switch closed)
         attachInterrupt(
@@ -105,6 +108,9 @@ namespace MotionSystem {
         m_emergencyStop = false;
     }
 
+    /**
+     * ISR for limit switch interrupt
+     */
     void IRAM_ATTR SafetyMonitor::limitSwitchISR(void* arg) {
         // Static member functions can't access instance variables directly
         // We must use the static instance pointer

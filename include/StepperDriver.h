@@ -68,11 +68,10 @@ namespace MotionSystem {
         }
 
         /**
-         * Update step position based on elapsed time
-         * @param now Current time in microseconds
+         * Generate step position based on elapsed time
          * @return true if step was generated, false otherwise
          */
-        bool IRAM_ATTR update(uint64_t now);
+        bool IRAM_ATTR generateStep();
 
         /**
          * Get current step position
