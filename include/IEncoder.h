@@ -33,6 +33,12 @@ namespace MotionSystem {
         virtual int32_t getLastPosition() const = 0;
 
         /**
+         * Get last read 16-bit counter value
+         * @return Read encoder counter
+         */
+        virtual int32_t getEncoderCounter() const = 0;
+
+        /**
          * Reset encoder counter to zero
          */
         virtual void resetCounter() = 0;

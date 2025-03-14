@@ -399,6 +399,7 @@ namespace MotionSystem {
     void MotionController::printStatusUpdate(bool forceDisplay) const {
         // Get current positions
         int32_t currentPosition = m_encoder.getLastPosition();
+        int32_t encoderCounter  = m_encoder.getEncoderCounter();
         float   relPosition = m_encoder.countsToMicrons(currentPosition - m_relativeZeroPosition);
         float   absPosition = m_encoder.countsToMicrons(currentPosition - m_absoluteZeroPosition);
 
@@ -409,7 +410,7 @@ namespace MotionSystem {
         float error = relTarget - relPosition;
 
         // Calculate motor frequency - Fix: use m_driver instead of m_stepper
-        float motorFrequency = abs(m_driver.getSpeed());  // Steps per second
+        float motorFrequency = fabs(m_driver.getSpeed());  // Steps per second
 
         // Only print if moving or forced display
         if (motorFrequency > 10 || forceDisplay) {
@@ -419,11 +420,12 @@ namespace MotionSystem {
 
             // Fix: Changed %d to %.1f for the double value
             Serial.printf(
-                "POS(rel): %.3f µm (%.1f%% of ±%.1f mm), TARGET: %.3f µm, ERROR: %.3f µm\n",
-                relPosition, abs(relTravelPercent), Config::MotionParams::REL_TRAVEL_LIMIT_MM,
-                relTarget, error);
+                "POS(rel): %.3f µm (%.1f%% of ±%.1f mm), TARGET: %.3f µm, ERROR: %.3f µm, Encoder "
+                "Pos: %" PRId32 ", Encoder Cnt: %" PRId32 "\n",
+                relPosition, fabs(relTravelPercent), Config::MotionParams::REL_TRAVEL_LIMIT_MM,
+                relTarget, error, currentPosition, encoderCounter);
 
-            Serial.printf("POS(abs): %.3f µm, Travel: %.1f%% of %.1f mm\n", absPosition,
+            /*Serial.printf("POS(abs): %.3f µm, Travel: %.1f%% of %.1f mm\n", absPosition,
                           (absPosition / Config::MotionParams::TOTAL_TRAVEL_MICRONS) * 100,
                           Config::MotionParams::TOTAL_TRAVEL_MM);
 
@@ -432,7 +434,7 @@ namespace MotionSystem {
                 (motorFrequency /
                  (Config::MotionParams::STEPS_PER_REV * Config::MotionParams::MICROSTEPS)) *
                     Config::MotionParams::LEAD_SCREW_PITCH,
-                m_safety.isLimitSwitchTriggered() ? "TRIGGERED" : "clear");
+                m_safety.isLimitSwitchTriggered() ? "TRIGGERED" : "clear");*/
 
             Serial.println("-------------------------------");
         }

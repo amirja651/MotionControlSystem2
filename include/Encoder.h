@@ -51,6 +51,14 @@ namespace MotionSystem {
         }
 
         /**
+         * Get last read 16-bit counter value
+         * @return Read encoder counter
+         */
+        int32_t getEncoderCounter() const override {
+            return m_lastCount;
+        }
+
+        /**
          * Reset encoder counter to zero
          */
         void resetCounter() override;
