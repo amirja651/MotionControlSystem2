@@ -33,6 +33,8 @@ CommandHandler   commandHandler(motionController);
 void setup() {
     // Initialize serial port for debugging
     Serial.begin(Config::SERIAL_BAUD_RATE);
+    Serial.flush();
+    delay(100);  // Wait for serial to initialize
     Serial.println("High Precision Motion Control System");
     Serial.println("Version: " + String(Config::SYSTEM_VERSION));
 

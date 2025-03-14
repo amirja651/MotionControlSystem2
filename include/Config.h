@@ -17,7 +17,7 @@ namespace MotionSystem {
         // Debug and Logging
         constexpr bool    DEBUG_ENABLED = true;
         constexpr uint8_t LOG_LEVEL     = 5;  // 0=OFF, 1=ERROR, 2=WARN, 3=INFO, 4=DEBUG, 5=VERBOSE
-        constexpr unsigned long SERIAL_BAUD_RATE     = 250000;
+        constexpr unsigned long SERIAL_BAUD_RATE     = 115200;
         constexpr bool          COLOR_OUTPUT_ENABLED = false;
 
         // Pin Definitions
@@ -28,8 +28,8 @@ namespace MotionSystem {
             constexpr uint8_t ENABLE_PIN = 14;
 
             // Encoder pins
-            constexpr uint8_t ENCODER_A_PIN     = 23;
-            constexpr uint8_t ENCODER_B_PIN     = 22;
+            constexpr uint8_t ENCODER_A_PIN     = 22;
+            constexpr uint8_t ENCODER_B_PIN     = 23;
             constexpr uint8_t ENCODER_INDEX_PIN = 21;
 
             // Limit switch
